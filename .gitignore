@@ -1,0 +1,69 @@
+# Environment variables and secrets
+.env
+.env.local
+.env.*.local
+*.env
+**/.env
+**/.env.local
+
+# Virtual environments
+.5dayEnv/
+.venv/
+venv/
+ENV/
+env/
+.conda/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Google Cloud Service Account credentials (NEVER commit these!)
+*-*.json
+*service-account*.json
+*credentials*.json
+aiagent-*.json
+# Allow specific JSON files
+!*.evalset.json
+!package*.json
+!tsconfig*.json
+!tsconfig.json
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Logs
+*.log
+logs/
+**/logs/
+agents_log/
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.backup
+
+# ADK specific
+.adk/
+adk_cache/
+
