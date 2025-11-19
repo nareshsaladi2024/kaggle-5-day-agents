@@ -7,9 +7,21 @@ import vertexai
 import os
 import asyncio
 from dotenv import load_dotenv
+import sys
+from pathlib import Path
 
 # Load environment variables from .env file
 load_dotenv()
+
+# Configure logging for ADK using utility module
+# Add parent directory to path to enable utility imports
+parent_dir = Path(__file__).parent.parent.parent
+sys.path.insert(0, str(parent_dir))
+
+from utility.logging_config import setup_adk_logging, ensure_debug_logging
+
+# Setup logging - reads ADK_LOG_LEVEL from .env or defaults to DEBUG
+setup_adk_logging(agent_name="helpful_assistant", file_only=True)
 
 # Define root_agent at module level for ADK web server
 retry_config = types.HttpRetryOptions(
@@ -29,6 +41,9 @@ root_agent = Agent(
     instruction="You are a helpful assistant. Use Google Search for current info or if unsure.",
     tools=[google_search],
 )
+
+# Ensure logging is maintained after agent creation
+ensure_debug_logging(agent_name="helpful_assistant")
 
 
 async def main():
