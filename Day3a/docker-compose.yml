@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  session-agent:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: day3a-session-agent
+    environment:
+      - APP_NAME=session_app
+      - USER_ID=default
+      - AGENT_MODEL=${AGENT_MODEL:-gemini-2.5-flash-lite}
+      - SESSION_SERVICE_TYPE=database
+      - DB_URL=sqlite:///app/session_data.db
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+      - GOOGLE_CLOUD_PROJECT=${GOOGLE_CLOUD_PROJECT}
+      - GOOGLE_CLOUD_LOCATION=${GOOGLE_CLOUD_LOCATION:-us-central1}
+    volumes:
+      - ./session_data.db:/app/session_data.db
+      - ./compaction_data.db:/app/compaction_data.db
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+
+  compaction-agent:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: day3a-compaction-agent
+    environment:
+      - APP_NAME=compaction_app
+      - AGENT_MODEL=${AGENT_MODEL:-gemini-2.5-flash-lite}
+      - DB_URL=sqlite:///app/compaction_data.db
+      - COMPACTION_INTERVAL=${COMPACTION_INTERVAL:-3}
+      - OVERLAP_SIZE=${OVERLAP_SIZE:-1}
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+      - GOOGLE_CLOUD_PROJECT=${GOOGLE_CLOUD_PROJECT}
+      - GOOGLE_CLOUD_LOCATION=${GOOGLE_CLOUD_LOCATION:-us-central1}
+    volumes:
+      - ./compaction_data.db:/app/compaction_data.db
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+    command: ["python", "-c", "from agents.compaction_agent import runner; import asyncio; print('Compaction agent ready')"]
+
+  basic-session-agent:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: day3a-basic-session-agent
+    environment:
+      - APP_NAME=basic_session_app
+      - AGENT_MODEL=${AGENT_MODEL:-gemini-2.5-flash-lite}
+      - SESSION_SERVICE_TYPE=inmemory
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+      - GOOGLE_CLOUD_PROJECT=${GOOGLE_CLOUD_PROJECT}
+      - GOOGLE_CLOUD_LOCATION=${GOOGLE_CLOUD_LOCATION:-us-central1}
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+    command: ["python", "-c", "from agents.basic_session_agent import runner; import asyncio; print('Basic session agent ready')"]
+

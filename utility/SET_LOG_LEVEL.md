@@ -67,7 +67,7 @@ ADK_LOG_LEVEL=DEBUG
 ADK_LOG_LEVEL=DEBUG
 
 # Other environment variables
-GOOGLE_API_KEY=your-api-key-here
+GOOGLE_API_KEY=AIzaSyAaPeS-PaJ0UGRG6vAMuSoa5joAOpdQ5O8
 GOOGLE_CLOUD_PROJECT=your-project-id
 ```
 
