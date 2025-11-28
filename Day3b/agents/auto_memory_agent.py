@@ -80,3 +80,4 @@ print(f"   - Model: {MODEL_NAME}")
 print(f"   - Automatic memory storage: Enabled (after_agent_callback)")
 print(f"   - Memory retrieval: Proactive (preload_memory)")
 
+
