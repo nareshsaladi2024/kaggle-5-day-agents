@@ -5,6 +5,9 @@
 *.env
 **/.env
 **/.env.local
+env.template
+*.env.template
+**/env.template
 
 # Virtual environments
 .5dayEnv/

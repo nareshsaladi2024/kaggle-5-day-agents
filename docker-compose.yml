@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  adk-web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: kaggle-5-day-agents-web
+    ports:
+      - "8080:8080"
+    environment:
+      # Load from .env file in Day1a (or set these in your .env file)
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+      - GOOGLE_CLOUD_PROJECT=${GOOGLE_CLOUD_PROJECT:-aiagent-capstoneproject}
+      - GOOGLE_CLOUD_LOCATION=${GOOGLE_CLOUD_LOCATION:-us-central1}
+      - GOOGLE_GENAI_USE_VERTEXAI=${GOOGLE_GENAI_USE_VERTEXAI:-1}
+      - GOOGLE_APPLICATION_CREDENTIALS=${GOOGLE_APPLICATION_CREDENTIALS:-/app/service_account.json}
+      - ADK_LOG_LEVEL=${ADK_LOG_LEVEL:-DEBUG}
+    volumes:
+      # Mount .env files from each day directory
+      - ./Day1a/.env:/app/Day1a/.env:ro
+      - ./Day1b/.env:/app/Day1b/.env:ro
+      - ./Day2a/.env:/app/Day2a/.env:ro
+      - ./Day2b/.env:/app/Day2b/.env:ro
+      - ./Day3a/.env:/app/Day3a/.env:ro
+      - ./Day3b/.env:/app/Day3b/.env:ro
+      - ./Day4a/.env:/app/Day4a/.env:ro
+      - ./Day4b/.env:/app/Day4b/.env:ro
+      - ./Day5a/.env:/app/Day5a/.env:ro
+      - ./Day5b/.env:/app/Day5b/.env:ro
+      # Mount service account if it exists (optional)
+      - ./service_account.json:/app/service_account.json:ro
+      # Mount database files for Day3a/Day3b (will be created if they don't exist)
+      - ./Day3a/session_data.db:/app/Day3a/session_data.db
+      - ./Day3a/compaction_data.db:/app/Day3a/compaction_data.db
+      - ./Day3b/memory_data.db:/app/Day3b/memory_data.db
+    env_file:
+      # Load environment variables from root .env file
+      - .env
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+    command: ["adk", "web", ".", "--port", "8080", "--host", "0.0.0.0", "--log_level", "DEBUG"]
+

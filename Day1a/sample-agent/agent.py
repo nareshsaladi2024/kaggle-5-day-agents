@@ -18,7 +18,7 @@ setup_adk_logging(agent_name="sample-agent", file_only=True)
 
 root_agent = Agent(
     model='gemini-2.5-flash-lite',
-    name='root_agent',
+    name='sample-agent',
     description='A helpful assistant for user questions.',
     instruction='Answer user questions to the best of your knowledge',
 )

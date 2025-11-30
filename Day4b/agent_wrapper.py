@@ -12,10 +12,10 @@ sys.path.insert(0, str(parent_dir))
 # Import the first agent found (ADK expects one root_agent per directory)
 # For multiple agents, use the first one or create a router agent
 try:
-    from Day4.AgentEvaluation.home_automation_agent.agent import root_agent
+    from Day4b.AgentEvaluation.home_automation_agent.agent import root_agent
     # root_agent is now available for ADK discovery
 except ImportError as e:
-    print(f"Warning: Could not import agent from Day4.AgentEvaluation.home_automation_agent.agent : {e}")
+    print(f"Warning: Could not import agent from Day4b.AgentEvaluation.home_automation_agent.agent : {e}")
     # Create a fallback agent
     from google.adk.agents import Agent
     from google.adk.models.google_llm import Gemini
