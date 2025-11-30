@@ -34,6 +34,6 @@ ENV ADK_LOG_LEVEL=DEBUG
 # Expose port for ADK web server
 EXPOSE 8080
 
-# Default command: run ADK web server with recursive discovery
-CMD ["adk", "web", ".", "--port", "8080", "--host", "0.0.0.0", "--log_level", "DEBUG"]
+# Default command: run ADK web server from agents directory
+CMD ["adk", "web", "agents", "--port", "8080", "--host", "0.0.0.0", "--log_level", "DEBUG"]
 

@@ -1,0 +1,58 @@
+# Docker ignore for API server deployment
+# Only include what's needed for agents-api-server.py
+
+# Exclude Day folders (we use agents/ directory)
+Day*/
+!agents/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Git
+.git/
+.gitignore
+
+# Documentation
+*.md
+!agents/README.md
+
+# Logs
+*.log
+logs/
+
+# Environment files (will be set in Cloud Run)
+.env
+.env.local
+
+# Docker files (except the one we need)
+Dockerfile
+docker-compose.yml
+Dockerfile.api
+
+# Deployment scripts
+deploy-*.ps1
+*.ps1
+
+# Other
+.DS_Store
+*.bak
+*.tmp
+

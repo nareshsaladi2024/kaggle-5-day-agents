@@ -1,0 +1,128 @@
+openapi: 3.1.0
+info:
+  title: ADK Agents API
+  description: REST API for Google ADK agents - compatible with ChatGPT Custom GPTs
+  version: 1.0.0
+servers:
+  - url: http://localhost:8000
+    description: Local development server
+  - url: https://your-api-url.com
+    description: Production server (replace with your URL)
+paths:
+  /chat:
+    post:
+      summary: Chat with an ADK agent
+      description: Send a message to an ADK agent and get a response. Compatible with ChatGPT Actions.
+      operationId: chatWithAgent
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - message
+              properties:
+                message:
+                  type: string
+                  description: The user's message or question
+                  example: "What's the weather in London?"
+                agent_name:
+                  type: string
+                  description: Name of the agent to use. If not specified, defaults to helpful_assistant.
+                  enum: 
+                    - helpful_assistant
+                    - sample-agent
+                    - currency_agent
+                    - image_agent
+                    - shipping_agent
+                    - research_agent
+                    - customer_support_agent
+                    - product_catalog_agent
+                    - weather_assistant
+                  example: helpful_assistant
+                conversation_id:
+                  type: string
+                  description: Optional conversation ID for maintaining context across messages
+                  example: "conv_123"
+      responses:
+        '200':
+          description: Successful response from the agent
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  response:
+                    type: string
+                    description: The agent's response
+                    example: "The weather in London is partly cloudy with a temperature of 15°C (59°F)."
+                  agent_name:
+                    type: string
+                    description: Name of the agent that responded
+                    example: helpful_assistant
+                  conversation_id:
+                    type: string
+                    description: Conversation ID (if provided)
+                    example: "conv_123"
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+                    example: "Error running agent: Agent not found"
+  /agents:
+    get:
+      summary: List all available agents
+      description: Get a list of all available ADK agents
+      operationId: listAgents
+      responses:
+        '200':
+          description: List of available agents
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  agents:
+                    type: array
+                    items:
+                      type: string
+                    example: ["helpful_assistant", "sample-agent", "currency_agent"]
+  /agents/{agent_name}/info:
+    get:
+      summary: Get agent information
+      description: Get detailed information about a specific agent
+      operationId: getAgentInfo
+      parameters:
+        - name: agent_name
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Name of the agent
+      responses:
+        '200':
+          description: Agent information
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                  description:
+                    type: string
+                  model:
+                    type: string
+                  tools:
+                    type: array
+                    items:
+                      type: string
+        '404':
+          description: Agent not found
+
