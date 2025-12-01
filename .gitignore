@@ -70,3 +70,9 @@ Thumbs.db
 .adk/
 adk_cache/
 
+# Exclude all markdown files except project descriptions and Capstone docs
+*.md
+!PROJECT_DESCRIPTION.md
+!README.md
+!CAPSTONE.md
+

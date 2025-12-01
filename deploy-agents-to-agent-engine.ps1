@@ -10,7 +10,7 @@
     Google Cloud Project ID (default: from .env or aiagent-capstoneproject)
 
 .PARAMETER Region
-    Agent Engine region (default: us-east4)
+    Agent Engine region (default: us-central1)
 
 .PARAMETER Agent
     Specific agent to deploy (optional, deploys all if not specified)
@@ -19,7 +19,7 @@
     .\deploy-agents-to-agent-engine.ps1
 
 .EXAMPLE
-    .\deploy-agents-to-agent-engine.ps1 -ProjectId "my-project" -Region "us-east4"
+    .\deploy-agents-to-agent-engine.ps1 -ProjectId "my-project" -Region "us-central1"
 
 .EXAMPLE
     .\deploy-agents-to-agent-engine.ps1 -Agent "sample-agent"
@@ -27,7 +27,7 @@
 
 param(
     [string]$ProjectId = "",
-    [string]$Region = "us-east4",
+    [string]$Region = "us-central1",
     [string]$Agent = ""
 )
 
@@ -84,6 +84,45 @@ Write-Host ""
 
 # Set project
 gcloud config set project $ProjectId
+
+# Configure Authentication - Enforce Application Default Credentials (ADC)
+Write-Host "Configuring authentication..." -ForegroundColor Cyan
+
+# Unset GOOGLE_APPLICATION_CREDENTIALS to enforce use of ADC
+if ($env:GOOGLE_APPLICATION_CREDENTIALS) {
+    Write-Host "[INFO] Unsetting GOOGLE_APPLICATION_CREDENTIALS to enforce ADC" -ForegroundColor Yellow
+    Remove-Item Env:\GOOGLE_APPLICATION_CREDENTIALS
+}
+
+# Check if user is authenticated with gcloud
+$authCheck = gcloud auth list --filter=status:ACTIVE --format="value(account)" 2>&1
+if ($LASTEXITCODE -ne 0 -or -not $authCheck) {
+    Write-Host "[WARNING] No active gcloud authentication found!" -ForegroundColor Yellow
+    Write-Host "  Please run: gcloud auth application-default login" -ForegroundColor Cyan
+    Write-Host "  Then run this script again." -ForegroundColor Yellow
+    Write-Host ""
+} else {
+    Write-Host "[OK] Authenticated as: $authCheck" -ForegroundColor Green
+    
+    # Set the quota project for ADC (optional, may fail in some environments)
+    Write-Host "Setting ADC quota project to: $ProjectId" -ForegroundColor Gray
+    try {
+        $quotaOutput = gcloud auth application-default set-quota-project $ProjectId 2>&1
+        if ($LASTEXITCODE -eq 0) {
+            Write-Host "[OK] ADC quota project set" -ForegroundColor Green
+        } else {
+            Write-Host "[WARNING] Could not set quota project (non-critical, continuing...)" -ForegroundColor Yellow
+            Write-Host "  This is usually fine - ADC will use your default project" -ForegroundColor Gray
+        }
+    } catch {
+        Write-Host "[WARNING] Error setting quota project: $_" -ForegroundColor Yellow
+        Write-Host "  This is usually fine - ADC will use your default project" -ForegroundColor Gray
+    }
+}
+
+Write-Host ""
+Write-Host "Using Application Default Credentials (ADC) for deployment" -ForegroundColor Cyan
+Write-Host ""
 
 # Enable APIs
 Write-Host "Enabling required APIs..." -ForegroundColor Cyan
@@ -151,22 +190,54 @@ foreach ($agentDir in $agentDirs) {
     }
     
     # Deploy using ADK
-    $deployCmd = "adk deploy agent_engine --project $ProjectId --region $Region `"$agentPath`" --agent_engine_config_file `"$configFile`""
-    
-    Write-Host "Running: $deployCmd" -ForegroundColor Gray
+    # ADK requires deployment from the agents/ directory, not from individual agent directories
+    Write-Host "Deploying to Vertex AI Agent Engine..." -ForegroundColor Cyan
+    Write-Host "  Agent: $agentName" -ForegroundColor Gray
+    Write-Host "  Config: $configFile" -ForegroundColor Gray
     Write-Host ""
     
     try {
-        Invoke-Expression $deployCmd
+        $originalLocation = Get-Location
+        # Change to agents directory (ADK requirement)
+        Set-Location $agentsDir
         
-        if ($LASTEXITCODE -eq 0) {
+        # Deploy using relative path from agents directory
+        $relativeAgentPath = $agentName
+        $relativeConfigPath = Join-Path $agentName ".agent_engine_config.json"
+        
+        Write-Host "  Running from: $agentsDir" -ForegroundColor Gray
+        Write-Host "  Command: adk deploy agent_engine --project $ProjectId --region $Region $relativeAgentPath --agent_engine_config_file $relativeConfigPath" -ForegroundColor Gray
+        Write-Host ""
+        
+        # Run deployment
+        $deployOutput = adk deploy agent_engine --project $ProjectId --region $Region $relativeAgentPath --agent_engine_config_file $relativeConfigPath 2>&1
+        $exitCode = $LASTEXITCODE
+        
+        # Check output for errors
+        $hasError = $false
+        $deployOutput | ForEach-Object {
+            if ($_ -match "Deploy failed|FAILED_PRECONDITION|ERROR|ModuleNotFoundError") {
+                Write-Host "  $_" -ForegroundColor Red
+                $hasError = $true
+            } elseif ($_ -match "Deploy succeeded|deployed successfully") {
+                Write-Host "  $_" -ForegroundColor Green
+            } else {
+                Write-Host "  $_" -ForegroundColor Gray
+            }
+        }
+        
+        if ($exitCode -eq 0 -and -not $hasError) {
             Write-Host "[OK] $agentName deployed successfully" -ForegroundColor Green
             $deployed++
-            Write-Host ""
         } else {
             Write-Host "[ERROR] Failed to deploy $agentName" -ForegroundColor Red
+            if ($hasError) {
+                Write-Host "  Check the error messages above for details" -ForegroundColor Yellow
+            }
             $failed++
         }
+        
+        Set-Location $originalLocation
     } catch {
         Write-Host "[ERROR] Deployment error: $_" -ForegroundColor Red
         $failed++

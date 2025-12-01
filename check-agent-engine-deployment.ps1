@@ -8,7 +8,7 @@
 
 param(
     [string]$ProjectId = "",
-    [string]$Region = "us-east4"
+    [string]$Region = "us-central1"
 )
 
 $ErrorActionPreference = "Stop"
@@ -121,4 +121,5 @@ Write-Host "  1. Run: .\deploy-agents-to-agent-engine.ps1" -ForegroundColor Whit
 Write-Host "  2. Wait 2-5 minutes for deployment to complete" -ForegroundColor White
 Write-Host "  3. Refresh the console" -ForegroundColor White
 Write-Host ""
+
 

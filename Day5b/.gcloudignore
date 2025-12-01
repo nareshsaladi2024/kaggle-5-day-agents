@@ -1,0 +1,52 @@
+# .gcloudignore - Files to exclude from Cloud Run source deployment
+# Only exclude files that are not needed for the build
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Environment files (will be set via --set-env-vars)
+.env
+.env.local
+
+# Documentation (but keep README)
+*.md
+!README.md
+
+# Notebooks
+*.ipynb
+
+# Test files
+test_*.py
+*_test.py
+cleanup_agent.py
+deploy_to_agent_engine.py
+
+# Explicitly include required files (override any parent .gcloudignore)
+!weather-assistant-api.py
+!WeatherAssistant/
+!WeatherAssistant/**
+!Dockerfile
+!requirements*.txt
+
