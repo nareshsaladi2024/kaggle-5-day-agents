@@ -1,0 +1,83 @@
+# Environment variables and secrets
+.env
+.env.local
+.env.*.local
+*.env
+**/.env
+**/.env.local
+env.template
+*.env.template
+**/env.template
+
+# Virtual environments
+.5dayEnv/
+.venv/
+venv/
+ENV/
+env/
+.conda/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Google Cloud Service Account credentials (NEVER commit these!)
+*-*.json
+*service-account*.json
+service_account*.json
+*credentials*.json
+aiagent-*.json
+# Allow specific JSON files
+!*.evalset.json
+!package*.json
+!tsconfig*.json
+!tsconfig.json
+
+# Agent Engine config files (may contain sensitive info)
+.agent_engine_config.json
+**/.agent_engine_config.json
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Logs
+*.log
+logs/
+**/logs/
+agents_log/
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.backup
+
+# ADK specific
+.adk/
+adk_cache/
+
+# Exclude all markdown files except project descriptions and Capstone docs
+*.md
+!PROJECT_DESCRIPTION.md
+!README.md
+!CAPSTONE.md
+
