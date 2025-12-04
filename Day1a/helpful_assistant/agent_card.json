@@ -1,0 +1,35 @@
+{
+  "name": "helpful_assistant",
+  "description": "A helpful assistant that can answer general questions and provide weather information.",
+  "version": "1.0.0",
+  "protocolVersion": "0.2.1",
+  "url": "http://localhost:10101/a2a",
+  "capabilities": {
+    "streaming": true,
+    "pushNotifications": false,
+    "stateTransitionHistory": true
+  },
+  "skills": [
+    {
+      "id": "default_skill",
+      "name": "helpful_assistant Default Skill",
+      "description": "Default capability of helpful_assistant",
+      "tags": [
+        "agent"
+      ],
+      "examples": [
+        "Use helpful_assistant to help me"
+      ]
+    }
+  ],
+  "defaultInputModes": [
+    "text"
+  ],
+  "defaultOutputModes": [
+    "text"
+  ],
+  "provider": {
+    "organization": "Capstone Project",
+    "url": "https://github.com/capstone"
+  }
+}

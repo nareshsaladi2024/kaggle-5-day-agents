@@ -1,0 +1,35 @@
+{
+  "name": "CustomerSupportAgent",
+  "description": "Remote product catalog agent from external vendor that provides product information.",
+  "version": "1.0.0",
+  "protocolVersion": "0.2.1",
+  "url": "http://localhost:10103/a2a",
+  "capabilities": {
+    "streaming": true,
+    "pushNotifications": false,
+    "stateTransitionHistory": true
+  },
+  "skills": [
+    {
+      "id": "default_skill",
+      "name": "CustomerSupportAgent Default Skill",
+      "description": "Default capability of CustomerSupportAgent",
+      "tags": [
+        "agent"
+      ],
+      "examples": [
+        "Use CustomerSupportAgent to help me"
+      ]
+    }
+  ],
+  "defaultInputModes": [
+    "text"
+  ],
+  "defaultOutputModes": [
+    "text"
+  ],
+  "provider": {
+    "organization": "Capstone Project",
+    "url": "https://github.com/capstone"
+  }
+}

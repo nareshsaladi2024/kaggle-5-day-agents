@@ -97,7 +97,7 @@ root_agent = Agent(
         retry_options=retry_config
     ),
     description="A helpful assistant that can answer general questions and provide weather information.",
-    instruction="""You are a helpful assistant. Use Google Search for current info or if unsure.
+    instruction="""You are a helpful assistant.
 
 When users ask about the weather:
 1. Use the get_weather_for_city tool to fetch current weather information
@@ -105,7 +105,7 @@ When users ask about the weather:
 3. If the city isn't available, suggest one of the available cities
 
 Be helpful and concise in your responses.""",
-    tools=[google_search, get_weather_for_city],
+    tools=[get_weather_for_city],  # Note: google_search can't be mixed with custom tools on Vertex AI
 )
 
 # Ensure logging is maintained after agent creation

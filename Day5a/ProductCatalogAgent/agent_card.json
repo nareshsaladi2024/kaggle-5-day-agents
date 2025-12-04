@@ -1,0 +1,35 @@
+{
+  "name": "ProductCatalogAgent",
+  "description": "External vendor",
+  "version": "1.0.0",
+  "protocolVersion": "0.2.1",
+  "url": "http://localhost:10104/a2a",
+  "capabilities": {
+    "streaming": true,
+    "pushNotifications": false,
+    "stateTransitionHistory": true
+  },
+  "skills": [
+    {
+      "id": "default_skill",
+      "name": "ProductCatalogAgent Default Skill",
+      "description": "Default capability of ProductCatalogAgent",
+      "tags": [
+        "agent"
+      ],
+      "examples": [
+        "Use ProductCatalogAgent to help me"
+      ]
+    }
+  ],
+  "defaultInputModes": [
+    "text"
+  ],
+  "defaultOutputModes": [
+    "text"
+  ],
+  "provider": {
+    "organization": "Capstone Project",
+    "url": "https://github.com/capstone"
+  }
+}
